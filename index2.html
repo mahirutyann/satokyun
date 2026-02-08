@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>無量空処</title>
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: sans-serif;
+}
+
+/* ボタン */
+#domainBtn {
+  padding: 15px 30px;
+  font-size: 18px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  z-index: 2;
+}
+
+/* ===== 領域 ===== */
+#domain {
+  position: fixed;
+  inset: 0;
+  display: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+/* 背景 */
+.domain-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at center, rgba(255,255,255,0.18), transparent 60%),
+    radial-gradient(circle at 30% 40%, #1a4fff66, transparent 50%),
+    radial-gradient(circle at 70% 60%, #00eaff66, transparent 50%),
+    linear-gradient(180deg, #020617, #030b2e);
+  animation: voidPulse 5s infinite alternate;
+  transition: opacity 1.2s ease;
+}
+
+@keyframes voidPulse {
+  from { filter: blur(0px) brightness(1); }
+  to   { filter: blur(2px) brightness(1.15); }
+}
+
+/* 粒子 */
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: white;
+  opacity: 0.6;
+  animation: float 7s linear infinite;
+}
+
+@keyframes float {
+  from { transform: translateY(110vh); }
+  to   { transform: translateY(-10vh); }
+}
+
+/* 五条 */
+#gojo {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#gojo img {
+  max-height: 80vh;
+  animation: appear 0.6s ease-out forwards;
+}
+
+@keyframes appear {
+  from { transform: scale(0.7); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+/* 文字 */
+#domainText {
+  position: absolute;
+  bottom: 8%;
+  font-size: 40px;
+  letter-spacing: 8px;
+  color: #e6faff;
+  text-shadow: 0 0 25px #00eaff;
+  transition: opacity 1s;
+}
+
+/* 解除演出 */
+.release {
+  opacity: 0;
+}
+
+/* 時間停止 */
+.time-stop * {
+  animation-play-state: paused !important;
+  pointer-events: none !important;
+}
+</style>
+</head>
+
+<body>
+
+<button id="domainBtn">領域展開</button>
+
+<div id="domain">
+  <div class="domain-bg" id="bg"></div>
+  <div id="particles"></div>
+
+  <div id="gojo">
+    <!-- 五条悟（領域展開ポーズ）の画像に差し替えてOK -->
+    <img src="gojo-domain.png" alt="五条悟">
+    <div id="domainText">無 量 空 処</div>
+  </div>
+</div>
+
+<script>
+const btn = document.getElementById("domainBtn");
+const domain = document.getElementById("domain");
+const particles = document.getElementById("particles");
+const bg = document.getElementById("bg");
+const text = document.getElementById("domainText");
+
+const DOMAIN_TIME = 5000; // 領域継続時間（ms）
+
+/* 粒子生成 */
+for (let i = 0; i < 120; i++) {
+  const p = document.createElement("div");
+  p.className = "particle";
+  p.style.left = Math.random() * 100 + "vw";
+  p.style.animationDuration = (4 + Math.random() * 5) + "s";
+  p.style.opacity = Math.random();
+  particles.appendChild(p);
+}
+
+btn.onclick = () => {
+  document.body.classList.add("time-stop");
+  domain.style.display = "block";
+
+  // 一定時間後に解除
+  setTimeout(releaseDomain, DOMAIN_TIME);
+};
+
+function releaseDomain() {
+  // フェードアウト演出
+  bg.classList.add("release");
+  text.classList.add("release");
+
+  setTimeout(() => {
+    domain.style.display = "none";
+    bg.classList.remove("release");
+    text.classList.remove("release");
+    document.body.classList.remove("time-stop");
+  }, 1200);
+}
+</script>
+
+</body>
+</html>
